@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\ExpressionEngine\ExpressionEngine\ExpressionEngine.csproj" />
+    <ProjectReference Include="..\..\src\ExpressionEngine\ExpressionEngine.csproj" />
   </ItemGroup>
 
 </Project>
