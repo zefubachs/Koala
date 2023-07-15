@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace ExpressionEngine.Functions;
 public class StringFunctions
@@ -11,4 +7,8 @@ public class StringFunctions
     public static string Lower(string input) => input.ToLower();
     [Function]
     public static string Upper(string input) => input.ToUpper();
+
+    [Function]
+    public static bool RegexMatch(string pattern, string input)
+        => Regex.IsMatch(input, pattern);
 }

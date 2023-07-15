@@ -4,7 +4,7 @@ public partial class BinaryNode
     public class AndNode : BinaryNode
     {
         public AndNode(AstNode left, AstNode right)
-            : base(left, right)
+            : base(NodeType.And, left, right)
         { }
 
         public override object? Execute(ExecutionContext context)
@@ -21,7 +21,7 @@ public partial class BinaryNode
     public class OrNode : BinaryNode
     {
         public OrNode(AstNode left, AstNode right)
-            : base(left, right)
+            : base(NodeType.Or, left, right)
         { }
 
         public override object? Execute(ExecutionContext context)

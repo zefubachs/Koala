@@ -27,12 +27,11 @@ public class Parser
             }
 
             var op = context.CurrentToken;
-            context.NextToken();
+            if (!context.NextToken())
+                throw new ParseException(op, "Unexpected end of expression");
 
+            var rightToken = context.CurrentToken;
             var right = ReadNode(context);
-            context.NextToken();
-
-
             switch (op.Value?.ToLower())
             {
                 case "and":
@@ -50,8 +49,9 @@ public class Parser
                 case "+":
                     root = new BinaryNode.AddNode(left, right);
                     break;
+                default:
+                    throw new ParseException(rightToken, $"Unexpected token '{rightToken.Value}'.");
             }
-            break;
         }
 
         if (root is null)
@@ -72,14 +72,41 @@ public class Parser
             //case TokenType.OpenParanthesis:
             //    // New scope
             //    break;
-            //case TokenType.Function:
-
-            //    break;
+            case TokenType.Function: return ParseFunction(context.CurrentToken, context);
             default:
                 throw new ParseException(context.CurrentToken, $"Unexpected token");
         }
     }
 
+    private FunctionNode ParseFunction(Token token, ParseContext context)
+    {
+        var function = this.functions.Find(token.Value!);
+        if (function is null)
+            throw new ParseException(token, $"Unknown function '{token.Value}'.");
+
+        if (!context.NextToken() || context.CurrentToken.Type != TokenType.OpenParanthesis)
+            throw new ParseException(token, "Expected '('.");
+
+        token = context.CurrentToken;
+        var parameters = new List<AstNode>();
+        while (context.NextToken())
+        {
+            token = context.CurrentToken;
+            if (context.CurrentToken.Type == TokenType.CloseParenthesis)
+                return new FunctionNode(function, parameters);
+
+            var node = ReadNode(context);
+            parameters.Add(node);
+
+            if (!context.NextToken() && context.CurrentToken.Type != TokenType.Comma && context.CurrentToken.Type != TokenType.CloseParenthesis)
+                throw new ParseException(token, "Expected ')' or ','.");
+
+            if (context.CurrentToken.Type == TokenType.CloseParenthesis)
+                return new FunctionNode(function, parameters);
+        }
+
+        throw new ParseException(token, "Expected ')'.");
+    }
 
     public static Parser CreateDefault()
     {

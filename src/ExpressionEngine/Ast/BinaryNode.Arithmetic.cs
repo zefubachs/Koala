@@ -11,7 +11,7 @@ public partial class BinaryNode
     public class AddNode : BinaryNode
     {
         public AddNode(AstNode left, AstNode right)
-            : base(left, right)
+            : base(NodeType.Add, left, right)
         { }
 
         public override object? Execute(ExecutionContext context)
@@ -24,19 +24,30 @@ public partial class BinaryNode
             if (leftArgument is int leftInteger && rightArgument is int rightInteger)
                 return leftInteger + rightInteger;
 
-            throw new NotImplementedException();
+            if (leftArgument is decimal leftDecimal && rightArgument is decimal rightDecimal)
+                return leftDecimal + rightDecimal;
+
+            throw new NotSupportedException();
         }
     }
 
     public class SubstractNode : BinaryNode
     {
         public SubstractNode(AstNode left, AstNode right)
-            : base(left, right)
+            : base(NodeType.Subtract, left, right)
         { }
 
         public override object? Execute(ExecutionContext context)
         {
-            throw new NotImplementedException();
+            var leftArgument = Left.Execute(context);
+            var rightArgument = Right.Execute(context);
+            if (leftArgument is int leftInteger && rightArgument is int rightInteger)
+                return leftInteger - rightInteger;
+
+            if (leftArgument is decimal leftDecimal && rightArgument is decimal rightDecimal)
+                return leftDecimal - rightDecimal;
+
+            throw new NotSupportedException();
         }
     }
 }

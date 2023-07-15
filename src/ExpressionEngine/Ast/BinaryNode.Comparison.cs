@@ -10,7 +10,7 @@ public partial class BinaryNode
     public class EqualsNode : BinaryNode
     {
         public EqualsNode(AstNode left, AstNode right)
-            : base(left, right)
+            : base(NodeType.Equals, left, right)
         { }
 
         public override object? Execute(ExecutionContext context)
@@ -24,7 +24,7 @@ public partial class BinaryNode
     public class NotEqualsNode : BinaryNode
     {
         public NotEqualsNode(AstNode left, AstNode right)
-            : base(left, right)
+            : base(NodeType.NotEquals, left, right)
         { }
 
         public override object? Execute(ExecutionContext context)

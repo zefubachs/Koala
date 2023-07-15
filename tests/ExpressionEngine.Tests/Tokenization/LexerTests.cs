@@ -18,6 +18,9 @@ public class LexerTests
     {
         var input = "+";
         var tokens = lexer.Tokenize(input).ToList();
+
+        //Assert.That.Instance(tokens).HaveLength(1)
+        //    .And.WithItem(0, x => x.EqualsTo(TokenType.Operator).And.EqualsTo("+"));
         Assert.AreEqual(1, tokens.Count);
         Assert.AreEqual(TokenType.Operator, tokens[0].Type);
         Assert.AreEqual("+", tokens[0].Value);
