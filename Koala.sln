@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B78B76C5-4FF0-4368-B738-7E6FBDCDFC0C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EA21A5ED-54D2-4AD1-9F36-25D67C334B62}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E33E4DF0-572F-4D60-8310-4A5540035432}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koala.Tests", "tests\Koala.Tests\Koala.Tests.csproj", "{889AC7F8-B605-4444-B845-7CAA8AE1CDA0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koala", "src\Koala\Koala.csproj", "{FAA0F1AE-F3DF-4993-9B5A-7F89FEE700C2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{889AC7F8-B605-4444-B845-7CAA8AE1CDA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{889AC7F8-B605-4444-B845-7CAA8AE1CDA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{889AC7F8-B605-4444-B845-7CAA8AE1CDA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{889AC7F8-B605-4444-B845-7CAA8AE1CDA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAA0F1AE-F3DF-4993-9B5A-7F89FEE700C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAA0F1AE-F3DF-4993-9B5A-7F89FEE700C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAA0F1AE-F3DF-4993-9B5A-7F89FEE700C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAA0F1AE-F3DF-4993-9B5A-7F89FEE700C2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{889AC7F8-B605-4444-B845-7CAA8AE1CDA0} = {E33E4DF0-572F-4D60-8310-4A5540035432}
+		{FAA0F1AE-F3DF-4993-9B5A-7F89FEE700C2} = {B78B76C5-4FF0-4368-B738-7E6FBDCDFC0C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9BEA876-CC15-4DF8-BFC2-F1720CEE9878}
+	EndGlobalSection
+EndGlobal
