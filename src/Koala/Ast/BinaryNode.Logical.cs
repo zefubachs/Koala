@@ -1,7 +1,4 @@
-﻿using Koala;
-using Koala.Ast;
-
-namespace Koala.Ast;
+﻿namespace Koala.Ast;
 public partial class BinaryNode
 {
     public class AndNode : BinaryNode
@@ -10,10 +7,10 @@ public partial class BinaryNode
             : base(NodeType.And, left, right)
         { }
 
-        public override object? Execute(ExecutionContext context)
+        public override async Task<object?> ExecuteAsync(ExecutionContext context)
         {
-            var leftValue = Left.Execute(context);
-            var rightValue = Right.Execute(context);
+            var leftValue = await Left.ExecuteAsync(context);
+            var rightValue = await Right.ExecuteAsync(context);
             if (leftValue is bool leftBool && rightValue is bool rightBool)
                 return leftBool && rightBool;
 
@@ -27,10 +24,10 @@ public partial class BinaryNode
             : base(NodeType.Or, left, right)
         { }
 
-        public override object? Execute(ExecutionContext context)
+        public override async Task<object?> ExecuteAsync(ExecutionContext context)
         {
-            var leftValue = Left.Execute(context);
-            var rightValue = Right.Execute(context);
+            var leftValue = await Left.ExecuteAsync(context);
+            var rightValue = await Right.ExecuteAsync(context);
             if (leftValue is bool leftBool && rightValue is bool rightBool)
                 return leftBool || rightBool;
 

@@ -1,25 +1,16 @@
-﻿using Koala;
-using Koala.Ast;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Koala.Ast;
+﻿namespace Koala.Ast;
 public partial class BinaryNode
 {
-
     public class AddNode : BinaryNode
     {
         public AddNode(AstNode left, AstNode right)
             : base(NodeType.Add, left, right)
         { }
 
-        public override object? Execute(ExecutionContext context)
+        public override async Task<object?> ExecuteAsync(ExecutionContext context)
         {
-            var leftArgument = Left.Execute(context);
-            var rightArgument = Right.Execute(context);
+            var leftArgument = await Left.ExecuteAsync(context);
+            var rightArgument = await Right.ExecuteAsync(context);
             if (leftArgument is string leftString && rightArgument is string rightString)
                 return leftString + rightString;
 
@@ -39,10 +30,10 @@ public partial class BinaryNode
             : base(NodeType.Subtract, left, right)
         { }
 
-        public override object? Execute(ExecutionContext context)
+        public override async Task<object?> ExecuteAsync(ExecutionContext context)
         {
-            var leftArgument = Left.Execute(context);
-            var rightArgument = Right.Execute(context);
+            var leftArgument = await Left.ExecuteAsync(context);
+            var rightArgument = await Right.ExecuteAsync(context);
             if (leftArgument is int leftInteger && rightArgument is int rightInteger)
                 return leftInteger - rightInteger;
 

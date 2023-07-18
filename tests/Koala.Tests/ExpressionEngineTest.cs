@@ -1,9 +1,4 @@
 ﻿using Koala.Tests.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koala.Tests;
 
@@ -13,66 +8,77 @@ public class ExpressionEngineTest
     private readonly ExpressionEngine engine = ExpressionEngine.CreateDefault();
 
     [TestMethod]
-    public void Logic_Boolean_Constant()
+    public async Task Logic_Boolean_Constant()
     {
         var expression = "true and true";
-        var result = engine.Execute(expression, new Dictionary<string, object?>());
-        Assert.That.IsOfType<bool>(result);
-        Assert.AreEqual(true, result);
+        var context = new ExecutionContext(new ParameterProviderBuilder().Build());
+
+        var result = await engine.ExecuteAsync(expression, context);
+        Assert.That.IsOfType<bool>(result.Result);
+        Assert.AreEqual(true, result.Result);
     }
 
     [TestMethod]
-    public void Sum_Integer_Constant()
+    public async Task Sum_Integer_Constant()
     {
         var expression = "2 + 3";
-        var result = engine.Execute(expression, new Dictionary<string, object?>());
-        Assert.That.IsOfType<int>(result);
-        Assert.AreEqual(5, result);
+        var context = new ExecutionContext(new ParameterProviderBuilder().Build());
+
+        var result = await engine.ExecuteAsync(expression, context);
+        Assert.That.IsOfType<int>(result.Result);
+        Assert.AreEqual(5, result.Result);
     }
 
     [TestMethod]
-    public void Sum_String_Constant()
+    public async Task Sum_String_Constant()
     {
         var expression = "\"Hallo\" + \" wereld\"";
-        var result = engine.Execute(expression, new Dictionary<string, object?>());
-        Assert.That.IsOfType<string>(result);
-        Assert.AreEqual("Hallo wereld", result);
+        var context = new ExecutionContext(new ParameterProviderBuilder().Build());
+
+        var result = await engine.ExecuteAsync(expression, context);
+        Assert.That.IsOfType<string>(result.Result);
+        Assert.AreEqual("Hallo wereld", result.Result);
     }
 
     [TestMethod]
-    public void Sum_Integer_Parameterized()
+    public async Task Sum_Integer_Parameterized()
     {
         var expression = "@Param1 + @Param2";
-        var parameters = new Dictionary<string, object?>
-        {
-            ["Param1"] = 2,
-            ["Param2"] = 3,
-        };
-        var result = engine.Execute(expression, parameters);
+        var context = new ExecutionContext(new ParameterProviderBuilder()
+            .AddDictionary(new Dictionary<string, object>
+            {
+                ["Param1"] = 2,
+                ["Param2"] = 3,
+            }).Build());
 
-        Assert.That.Instance(result).IsOfType<int>()
+        var result = await engine.ExecuteAsync(expression, context);
+
+        Assert.That.Instance(result.Result).IsOfType<int>()
             .And.EqualsTo(5);
     }
 
     [TestMethod]
-    public void Function_No_Parameters()
+    public async Task Function_No_Parameters()
     {
         var expression = "LOWER(\"HALLO\")";
-        var result = engine.Execute(expression, new Dictionary<string, object?>());
+        var context = new ExecutionContext(new ParameterProviderBuilder().Build());
 
-        Assert.AreEqual("hallo", result);
+        var result = await engine.ExecuteAsync(expression, context);
+        Assert.AreEqual("hallo", result.Result);
     }
 
     [TestMethod]
-    public void Function_Multiple_Parameters()
+    public async Task Function_Multiple_Parameters()
     {
         var expression = "RegexMatch(@Pattern, @Input)";
-        var parameters = new Dictionary<string, object?>
-        {
-            ["Pattern"] = "test",
-            ["Input"] = "Dit is een test",
-        };
-        var result = engine.Execute(expression, parameters);
-        Assert.AreEqual(true, result);
+        var context = new ExecutionContext(new ParameterProviderBuilder()
+            .AddDictionary(new Dictionary<string, object>
+            {
+                ["Pattern"] = "test",
+                ["Input"] = "Dit is een test",
+            }).Build());
+
+        var result = await engine.ExecuteAsync(expression, context);
+        Assert.AreEqual(true, result.Result);
     }
 }

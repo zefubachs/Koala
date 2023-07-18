@@ -1,11 +1,5 @@
-﻿using Koala;
-using Koala.Parsing;
+﻿using Koala.Parsing;
 using Koala.Tokenization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koala;
 public class ExpressionEngine
@@ -19,13 +13,13 @@ public class ExpressionEngine
         this.parser = parser;
     }
 
-    public object? Execute(string expression, Dictionary<string, object?> parameters)
+    public async Task<ExecuteResult> ExecuteAsync(string expression, ExecutionContext context)
     {
         var tokens = lexer.Tokenize(expression);
-        var result = parser.Parse(tokens);
+        var node = parser.Parse(tokens);
 
-        var context = new ExecutionContext(parameters);
-        return result.Root.Execute(context);
+        var result = await node.ExecuteAsync(context);
+        return new ExecuteResult(result, node);
     }
 
     public static ExpressionEngine CreateDefault()

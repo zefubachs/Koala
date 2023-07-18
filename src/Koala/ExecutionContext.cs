@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Koala;
+﻿namespace Koala;
 public class ExecutionContext
 {
-    public IReadOnlyDictionary<string, object?> Parameters { get; }
+    public ParameterProvider Parameters { get; }
 
-    public ExecutionContext(Dictionary<string, object?> parameters)
+    public ExecutionContext(ParameterProvider parameters)
     {
-        Parameters = parameters.AsReadOnly();
+        Parameters = parameters;
     }
 
 }

@@ -14,7 +14,7 @@ public class Parser
         this.functions = functions;
     }
 
-    public ParseResult Parse(IEnumerable<Token> tokens)
+    public AstNode Parse(IEnumerable<Token> tokens)
     {
         var context = new ParseContext(tokens);
         AstNode? root = null;
@@ -58,7 +58,7 @@ public class Parser
         if (root is null)
             throw new NotSupportedException("test");
 
-        return new ParseResult(root);
+        return root;
     }
 
     private AstNode ReadNode(ParseContext context)

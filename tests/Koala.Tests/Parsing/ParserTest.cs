@@ -22,11 +22,11 @@ public class ParserTest
             new Token(TokenType.Parameter, "Param1", 0, 0),
         };
         var result = parser.Parse(tokens);
-        Assert.IsInstanceOfType(result.Root, typeof(ParameterNode));
+        Assert.IsInstanceOfType(result, typeof(ParameterNode));
     }
 
     [TestMethod]
-    public void Function_Single_Parameter()
+    public async Task Function_Single_Parameter()
     {
         var tokens = new List<Token>()
         {
@@ -36,11 +36,11 @@ public class ParserTest
             new Token(TokenType.CloseParenthesis, null, 0, 10),
         };
         var result = parser.Parse(tokens);
-        var expression = result.Root as FunctionNode;
+        var expression = result as FunctionNode;
         Assert.IsNotNull(expression);
 
-        var context = new ExecutionContext(new Dictionary<string, object>());
-        var returnValue = expression.Execute(context);
+        var context = new ExecutionContext(new ParameterProviderBuilder().Build());
+        var returnValue = await expression.ExecuteAsync(context);
         Assert.AreEqual("test", returnValue);
     }
 
@@ -49,7 +49,7 @@ public class ParserTest
     {
         var tokens = new List<Token>
         {
-            new Token(TokenType.Function, "PadLeft", 0, 0),
+            new Token(TokenType.Function, "Lower", 0, 0),
             new Token(TokenType.OpenParanthesis, null, 0, 7),
             new Token(TokenType.String, "a", 0, 8),
             new Token(TokenType.Comma, null, 0, 9),
@@ -57,7 +57,7 @@ public class ParserTest
             new Token(TokenType.CloseParenthesis, null, 0, 11),
         };
         var result = parser.Parse(tokens);
-        var expression = result.Root as FunctionNode;
+        var expression = result as FunctionNode;
         Assert.IsNotNull(expression);
     }
 
@@ -71,7 +71,7 @@ public class ParserTest
             new Token(TokenType.Boolean, bool.FalseString, 0, 7),
         };
         var result = parser.Parse(tokens);
-        var node = result.Root as BinaryNode.AndNode;
+        var node = result as BinaryNode.AndNode;
         Assert.IsNotNull(node);
     }
 }

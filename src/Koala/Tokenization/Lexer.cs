@@ -83,7 +83,7 @@ public class Lexer
             new TokenDefinition(TokenType.Decimal, "^\\d+,\\d+"),
             new TokenDefinition(TokenType.Number, "^\\d+"),
             new TokenDefinition(TokenType.Function, "^[a-zA-Z]\\w*"),
-            new TokenDefinition(TokenType.Parameter, "^@(\\w+)")
+            new TokenDefinition(TokenType.Parameter, "^@([\\w.]+)")
         };
 
         return new Lexer(definitions);

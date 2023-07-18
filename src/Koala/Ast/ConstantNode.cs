@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Koala.Ast;
+﻿namespace Koala.Ast;
 public class ConstantNode : AstNode
 {
-    public object? Value { get; }
+    private readonly Task<object?> task;
+
+    public object? Value => task.Result;
     public Type Type { get; }
 
     public ConstantNode(object? value, Type type)
     {
-        Value = value;
+        task = Task.FromResult(value);
         Type = type;
     }
 
-    public override object? Execute(ExecutionContext context)
+    public override Task<object?> ExecuteAsync(ExecutionContext context)
     {
-        return Value;
+        return task;
     }
 }

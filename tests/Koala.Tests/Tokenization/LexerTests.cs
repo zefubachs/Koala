@@ -32,7 +32,7 @@ public class LexerTests
         var input = "AND";
         var tokens = lexer.Tokenize(input).ToList();
         Assert.AreEqual(1, tokens.Count);
-        Assert.AreEqual(TokenType.Boolean, tokens[0].Type);
+        Assert.AreEqual(TokenType.Operator, tokens[0].Type);
         Assert.AreEqual("AND", tokens[0].Value);
     }
 

@@ -12,12 +12,12 @@ public class FunctionNode : AstNode
         Parameters = parameters.ToList();
     }
 
-    public override object? Execute(ExecutionContext context)
+    public override async Task<object?> ExecuteAsync(ExecutionContext context)
     {
         var arguments = new object?[Parameters.Count];
         for (int i = 0; i < Parameters.Count; i++)
         {
-            var argument = Parameters[i].Execute(context);
+            var argument = await Parameters[i].ExecuteAsync(context);
             arguments[i] = argument;
         }
 

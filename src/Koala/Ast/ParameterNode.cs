@@ -8,11 +8,12 @@ public class ParameterNode : AstNode
         ParameterName = parameterName;
     }
 
-    public override object? Execute(ExecutionContext context)
+    public override async Task<object?> ExecuteAsync(ExecutionContext context)
     {
-        if (context.Parameters.TryGetValue(ParameterName, out var parameter))
-            return parameter;
+        var value = await context.Parameters.GetValueAsync(ParameterName);
+        if (value is null)
+            throw new InvalidOperationException($"Parameter '{ParameterName}' is not provided");
 
-        throw new InvalidOperationException($"Parameter '{ParameterName}' is not provided");
+        return value;
     }
 }
