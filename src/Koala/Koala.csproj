@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
@@ -9,7 +8,7 @@
 		<Authors>Zef Ubachs</Authors>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>Koala</Title>
-		<Description>A string to expression compiler.</Description>
+		<Description>A string to expression parser.</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/zefubachs/Koala</RepositoryUrl>
 	</PropertyGroup>
