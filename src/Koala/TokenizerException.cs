@@ -1,15 +1,11 @@
 ﻿namespace Koala;
-public class TokenizerException : Exception
+public class TokenizerException(string message, char invalidCharacter, int line, int column) : Exception(message)
 {
-    public char InvalidCharacter { get; }
-    public int Line { get; }
-    public int Column { get; }
+    public char InvalidCharacter { get; } = invalidCharacter;
+    public int Line { get; } = line;
+    public int Column { get; } = column;
 
     public TokenizerException(char invalidCharacter, int line, int column)
-        : base($"Invalid token '{invalidCharacter}' at {line}:{column}")
-    {
-        InvalidCharacter = invalidCharacter;
-        Line = line;
-        Column = column;
-    }
+        : this($"Invalid token '{invalidCharacter}' at {line}:{column}", invalidCharacter, line, column)
+    { }
 }

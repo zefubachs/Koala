@@ -1,4 +1,6 @@
-﻿namespace Koala.Tokenization;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Koala.Tokenization;
 public class Lexer
 {
     private static readonly SkipCharacter[] skipCharacters = new SkipCharacter[]
@@ -11,38 +13,126 @@ public class Lexer
 
     private readonly List<TokenDefinition> definitions;
 
+    private readonly ITokenScanner[] scanners =
+    {
+        new FixedTokenScanner(TokenType.OpenParanthesis, "("),
+        new FixedTokenScanner(TokenType.CloseParenthesis, ")"),
+        new FixedTokenScanner(TokenType.Operator, "+"),
+        new FixedTokenScanner(TokenType.Operator, "-"),
+        new FixedTokenScanner(TokenType.Operator, "\\"),
+        new FixedTokenScanner(TokenType.Operator, "*"),
+        new FixedTokenScanner(TokenType.Operator, "%"),
+        new FixedTokenScanner(TokenType.Operator, "=="),
+        new FixedTokenScanner(TokenType.Operator, "!="),
+        new FixedTokenScanner(TokenType.Operator, ">"),
+        new FixedTokenScanner(TokenType.Operator, ">="),
+        new FixedTokenScanner(TokenType.Operator, "<"),
+        new FixedTokenScanner(TokenType.Operator, "<="),
+        new FixedTokenScanner(TokenType.Comma, ","),
+        new StringTokenScanner(),
+        new NummericTokenScanner(),
+    };
+
     public Lexer(IEnumerable<TokenDefinition> definitions)
     {
         this.definitions = definitions.ToList();
     }
 
-    public IReadOnlyCollection<Token> Tokenize(string input)
+    public IReadOnlyCollection<Token> Tokenize(ReadOnlySpan<char> input)
     {
         var tokens = new List<Token>();
-        var cursor = new StringCursor(input);
-        while (!cursor.Finished)
+        var position = 0;
+        var column = 0;
+        var line = 0;
+        while (position <= input.Length)
         {
-            var token = FindMatch(cursor);
-            if (token is not null)
+            if (input[position] == ' ')
             {
+                position++;
+                column++;
+                position++;
+                continue;
+            }
+
+            if (input[position] == '\t')
+            {
+                column += 3;
+                position++;
+                continue;
+            }
+
+            if (input[position] == '\n' || input[position] == '\r')
+            {
+                NewLine(1);
+                continue;
+            }
+
+            if (input[position..(position + 1)] == "\r\n")
+            {
+                NewLine(2);
+                continue;
+            }
+
+            var cursor = new StringCursor(input[position..], column, line);
+            if (TryScan(ref cursor, out var token, out var skip))
+            {
+                position += skip;
                 tokens.Add(token);
                 continue;
             }
 
-            var skip = skipCharacters.FirstOrDefault(x => cursor.Current.StartsWith(x.Value));
-            if (skip is not null)
+            throw new TokenizerException(input[position], line, column);
+
+            void NewLine(int characterCount)
             {
-                cursor.Forward(skip.Value.Length);
-                if (skip.NewLine)
-                    cursor.NextLine();
-
-                continue;
+                column = 0;
+                line++;
+                position += characterCount;
             }
-
-            throw new TokenizerException(cursor.Current[0], cursor.Line, cursor.Column);
         }
 
+        //var cursor = new StringCursor(input);
+        //while (!cursor.Finished)
+        //{
+        //    var token = FindMatch(cursor);
+        //    if (token is not null)
+        //    {
+        //        tokens.Add(token);
+        //        continue;
+        //    }
+
+        //    var skip = skipCharacters.FirstOrDefault(x => cursor.Current.StartsWith(x.Value));
+        //    if (skip is not null)
+        //    {
+        //        cursor.Forward(skip.Value.Length);
+        //        if (skip.NewLine)
+        //            cursor.NextLine();
+
+        //        continue;
+        //    }
+
+        //    throw new TokenizerException(cursor.Current[0], cursor.Line, cursor.Column);
+        //}
+
         return tokens;
+    }
+
+    private bool TryScan(ref StringCursor cursor, [NotNullWhen(true)] out Token? token, out int skip)
+    {
+        foreach (var scanner in scanners)
+        {
+            var result = scanner.Scan(ref cursor);
+            if (result is null)
+            {
+                token = result.Value.token;
+                skip = result.Value.positions;
+                return true;
+            }
+        }
+
+        token = null;
+        skip = 0;
+        return false;
     }
 
     private Token? FindMatch(StringCursor cursor)

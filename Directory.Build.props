@@ -1,5 +1,6 @@
 <Project>
 	<PropertyGroup>
 		<TargetFramework>net8</TargetFramework>
+		<UseArtifactsOutput>true</UseArtifactsOutput>
 	</PropertyGroup>
 </Project>

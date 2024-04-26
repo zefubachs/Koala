@@ -1,46 +1,43 @@
-﻿using Koala.Tests.Extensions;
+﻿namespace Koala.Tests;
 
-namespace Koala.Tests;
-
-[TestClass]
 public class ExpressionEngineTest
 {
     private readonly ExpressionEngine engine = ExpressionEngine.CreateDefault();
 
-    [TestMethod]
+    [Fact]
     public async Task Logic_Boolean_Constant()
     {
         var expression = "true and true";
         var context = new ExecutionContext(new ParameterProviderBuilder().Build());
 
         var result = await engine.ExecuteAsync(expression, context);
-        Assert.That.IsOfType<bool>(result.Result);
-        Assert.AreEqual(true, result.Result);
+        Assert.IsType<bool>(result.Result);
+        Assert.Equal(true, result.Result);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Sum_Integer_Constant()
     {
         var expression = "2 + 3";
         var context = new ExecutionContext(new ParameterProviderBuilder().Build());
 
         var result = await engine.ExecuteAsync(expression, context);
-        Assert.That.IsOfType<int>(result.Result);
-        Assert.AreEqual(5, result.Result);
+        Assert.IsType<int>(result.Result);
+        Assert.Equal(5, result.Result);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Sum_String_Constant()
     {
         var expression = "\"Hallo\" + \" wereld\"";
         var context = new ExecutionContext(new ParameterProviderBuilder().Build());
 
         var result = await engine.ExecuteAsync(expression, context);
-        Assert.That.IsOfType<string>(result.Result);
-        Assert.AreEqual("Hallo wereld", result.Result);
+        Assert.IsType<string>(result.Result);
+        Assert.Equal("Hallo wereld", result.Result);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Sum_Integer_Parameterized()
     {
         var expression = "@Param1 + @Param2";
@@ -53,21 +50,20 @@ public class ExpressionEngineTest
 
         var result = await engine.ExecuteAsync(expression, context);
 
-        Assert.That.Instance(result.Result).IsOfType<int>()
-            .And.EqualsTo(5);
+        Assert.IsType<int>(result.Result);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Function_No_Parameters()
     {
         var expression = "LOWER(\"HALLO\")";
         var context = new ExecutionContext(new ParameterProviderBuilder().Build());
 
         var result = await engine.ExecuteAsync(expression, context);
-        Assert.AreEqual("hallo", result.Result);
+        Assert.Equal("hallo", result.Result);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Function_Multiple_Parameters()
     {
         var expression = "RegexMatch(@Pattern, @Input)";
@@ -79,6 +75,6 @@ public class ExpressionEngineTest
             }).Build());
 
         var result = await engine.ExecuteAsync(expression, context);
-        Assert.AreEqual(true, result.Result);
+        Assert.Equal(true, result.Result);
     }
 }

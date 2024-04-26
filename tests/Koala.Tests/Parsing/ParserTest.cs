@@ -4,7 +4,6 @@ using Koala.Tokenization;
 
 namespace Koala.Tests.Parsing;
 
-[TestClass]
 public class ParserTest
 {
     private readonly Parser parser;
@@ -14,7 +13,7 @@ public class ParserTest
         parser = Parser.CreateDefault();
     }
 
-    [TestMethod]
+    [Fact]
     public void Simple_Parameter()
     {
         var tokens = new List<Token>
@@ -22,10 +21,10 @@ public class ParserTest
             new Token(TokenType.Parameter, "Param1", 0, 0),
         };
         var result = parser.Parse(tokens);
-        Assert.IsInstanceOfType(result, typeof(ParameterNode));
+        Assert.IsType<ParameterNode>(result);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Function_Single_Parameter()
     {
         var tokens = new List<Token>()
@@ -37,14 +36,14 @@ public class ParserTest
         };
         var result = parser.Parse(tokens);
         var expression = result as FunctionNode;
-        Assert.IsNotNull(expression);
+        Assert.NotNull(expression);
 
         var context = new ExecutionContext(new ParameterProviderBuilder().Build());
         var returnValue = await expression.ExecuteAsync(context);
-        Assert.AreEqual("test", returnValue);
+        Assert.Equal("test", returnValue);
     }
 
-    [TestMethod]
+    [Fact]
     public void Function_Multiple_Parameters()
     {
         var tokens = new List<Token>
@@ -58,10 +57,10 @@ public class ParserTest
         };
         var result = parser.Parse(tokens);
         var expression = result as FunctionNode;
-        Assert.IsNotNull(expression);
+        Assert.NotNull(expression);
     }
 
-    [TestMethod]
+    [Fact]
     public void Logical_Single_And()
     {
         var tokens = new List<Token>
@@ -72,6 +71,6 @@ public class ParserTest
         };
         var result = parser.Parse(tokens);
         var node = result as BinaryNode.AndNode;
-        Assert.IsNotNull(node);
+        Assert.NotNull(node);
     }
 }

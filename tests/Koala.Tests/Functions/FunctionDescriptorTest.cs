@@ -1,16 +1,10 @@
 ﻿using Koala.Functions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koala.Tests.Functions;
 
-[TestClass]
 public class FunctionDescriptorTest
 {
-    [TestMethod]
+    [Fact]
     public void Single_Parameter()
     {
         var method = typeof(FunctionClass).GetMethod(nameof(FunctionClass.Echo));
@@ -19,7 +13,7 @@ public class FunctionDescriptorTest
         var input = "test";
         var output = descriptor.Invoke(new[] { input });
 
-        Assert.AreEqual("test", output);
+        Assert.Equal("test", output);
     }
 
     public static class FunctionClass

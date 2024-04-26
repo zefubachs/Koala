@@ -19,17 +19,17 @@ public class TokenDefinition
 
     public bool Match(StringCursor cursor, [NotNullWhen(true)] out Token? token)
     {
-        var match = regex.Match(cursor.Current);
-        if (match.Success)
-        {
-            var value = match.Value;
-            if (match.Groups.Count > 1)
-                value = match.Groups[1].Value;
+        //var match = regex.Match(cursor.Current);
+        //if (match.Success)
+        //{
+        //    var value = match.Value;
+        //    if (match.Groups.Count > 1)
+        //        value = match.Groups[1].Value;
 
-            token = new Token(tokenType, value, cursor.Line, cursor.Column);
-            cursor.Forward(match.Length);
-            return true;
-        }
+        //    token = new Token(tokenType, value, cursor.Line, cursor.Column);
+        //    cursor.Forward(match.Length);
+        //    return true;
+        //}
 
         token = null;
         return false;
