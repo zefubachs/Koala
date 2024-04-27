@@ -2,17 +2,8 @@
 using Koala.Tokenization;
 
 namespace Koala;
-public class ExpressionEngine
+public class ExpressionEngine(Lexer lexer, Parser parser)
 {
-    private readonly Lexer lexer;
-    private readonly Parser parser;
-
-    public ExpressionEngine(Lexer lexer, Parser parser)
-    {
-        this.lexer = lexer;
-        this.parser = parser;
-    }
-
     public async Task<ExecuteResult> ExecuteAsync(string expression, ExecutionContext context)
     {
         var tokens = lexer.Tokenize(expression);
