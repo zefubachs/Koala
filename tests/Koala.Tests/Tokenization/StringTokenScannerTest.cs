@@ -14,9 +14,9 @@ public class StringTokenScannerTest
         var result = scanner.Scan(ref cursor);
 
         Assert.NotNull(result);
-        Assert.Equal(TokenType.String, result.Value.token.Type);
-        Assert.Equal("test input", result.Value.token.Value);
-        Assert.Equal(input.Length, result.Value.positions);
+        Assert.Equal(TokenType.String, result.Value.Token.Type);
+        Assert.Equal("test input", result.Value.Token.Value);
+        Assert.Equal(input.Length, result.Value.Length);
     }
 
     [Fact]

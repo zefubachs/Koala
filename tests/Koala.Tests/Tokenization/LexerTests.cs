@@ -31,12 +31,12 @@ public class LexerTests
     }
 
     [Fact]
-    public void Value_Single_Boolean_True()
+    public void Value_Single_True()
     {
         var input = "TRUE";
         var tokens = lexer.Tokenize(input).ToList();
         Assert.Single(tokens);
-        Assert.Equal(TokenType.Boolean, tokens[0].Type);
+        Assert.Equal(TokenType.True, tokens[0].Type);
         Assert.Equal("TRUE", tokens[0].Value);
     }
 
@@ -53,11 +53,11 @@ public class LexerTests
     [Fact]
     public void Valid_Single_Decimal()
     {
-        var input = "1,23";
+        var input = "1.23";
         var tokens = lexer.Tokenize(input).ToList();
         Assert.Single(tokens);
         Assert.Equal(TokenType.Decimal, tokens[0].Type);
-        Assert.Equal("1,23", tokens[0].Value);
+        Assert.Equal("1.23", tokens[0].Value);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class LexerTests
         var tokens = lexer.Tokenize(input).ToList();
 
         Assert.Equal(4, tokens.Count);
-        Assert.Equal(TokenType.Function, tokens[0].Type);
+        Assert.Equal(TokenType.Reference, tokens[0].Type);
         Assert.Equal("LOWER", tokens[0].Value);
         Assert.Equal(TokenType.OpenParanthesis, tokens[1].Type);
 
@@ -103,7 +103,7 @@ public class LexerTests
     public void Function_With_Multiple_Parameters()
     {
         var input = """REGEX(@Param1, "^\d", true)""";
-        var tokens = lexer.Tokenize(input).ToList();
+        var tokens = lexer.Tokenize(input);
 
         Assert.Equal(8, tokens.Count);
     }

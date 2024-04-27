@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 
 namespace Koala.Tokenization;
 public class Lexer
@@ -29,8 +30,14 @@ public class Lexer
         new FixedTokenScanner(TokenType.Operator, "<"),
         new FixedTokenScanner(TokenType.Operator, "<="),
         new FixedTokenScanner(TokenType.Comma, ","),
+        new RegexTokenScanner(TokenType.True, @"^true(?![a-zA-Z_])", RegexOptions.IgnoreCase),
+        new RegexTokenScanner(TokenType.False, @"^false(?![a-zA-Z_])", RegexOptions.IgnoreCase),
+        new RegexTokenScanner(TokenType.Operator, @"^(and|or)(?![a-zA-Z_])", RegexOptions.IgnoreCase),
+        new RegexTokenScanner(TokenType.Reference, @"^[a-zA-Z]\w*"),
+        new ParameterTokenScanner(),
         new StringTokenScanner(),
         new NummericTokenScanner(),
+        new FixedTokenScanner(TokenType.Accessor, "."),
     };
 
     public Lexer(IEnumerable<TokenDefinition> definitions)
@@ -44,11 +51,10 @@ public class Lexer
         var position = 0;
         var column = 0;
         var line = 0;
-        while (position <= input.Length)
+        while (position < input.Length)
         {
             if (input[position] == ' ')
             {
-                position++;
                 column++;
                 position++;
                 continue;
@@ -61,34 +67,28 @@ public class Lexer
                 continue;
             }
 
-            if (input[position] == '\n' || input[position] == '\r')
+            if (input[position] == '\r')
             {
-                NewLine(1);
+                column++;
+                position++;
                 continue;
             }
 
-            if (input[position..(position + 1)] == "\r\n")
+            if (input[position] == '\n')
             {
-                NewLine(2);
+                column = 0;
+                line++;
+                position++;
                 continue;
             }
 
             var cursor = new StringCursor(input[position..], column, line);
-            if (TryScan(ref cursor, out var token, out var skip))
-            {
-                position += skip;
-                tokens.Add(token);
-                continue;
-            }
+            if (!TryScan(ref cursor, out var token, out var skip))
+                throw new TokenizerException(input[position], line, column);
 
-            throw new TokenizerException(input[position], line, column);
 
-            void NewLine(int characterCount)
-            {
-                column = 0;
-                line++;
-                position += characterCount;
-            }
+            position += skip;
+            tokens.Add(token);
         }
 
         //var cursor = new StringCursor(input);
@@ -122,10 +122,10 @@ public class Lexer
         foreach (var scanner in scanners)
         {
             var result = scanner.Scan(ref cursor);
-            if (result is null)
+            if (result is not null)
             {
-                token = result.Value.token;
-                skip = result.Value.positions;
+                token = result.Value.Token;
+                skip = result.Value.Length;
                 return true;
             }
         }
@@ -159,8 +159,8 @@ public class Lexer
             new TokenDefinition(TokenType.Operator, "^%"),
             new TokenDefinition(TokenType.OpenParanthesis, "^\\("),
             new TokenDefinition(TokenType.CloseParenthesis, "^\\)"),
-            new TokenDefinition(TokenType.Boolean, "^true"),
-            new TokenDefinition(TokenType.Boolean, "^false"),
+            //new TokenDefinition(TokenType.Boolean, "^true"),
+            //new TokenDefinition(TokenType.Boolean, "^false"),
             new TokenDefinition(TokenType.Comma, "^,"),
             new TokenDefinition(TokenType.Operator, "^=="),
             new TokenDefinition(TokenType.Operator, "^!="),
@@ -172,7 +172,7 @@ public class Lexer
             new TokenDefinition(TokenType.String, "^\"([^\"]+)\""),
             new TokenDefinition(TokenType.Decimal, "^\\d+,\\d+"),
             new TokenDefinition(TokenType.Number, "^\\d+"),
-            new TokenDefinition(TokenType.Function, "^[a-zA-Z]\\w*"),
+            new TokenDefinition(TokenType.Reference, "^[a-zA-Z]\\w*"),
             new TokenDefinition(TokenType.Parameter, "^@([\\w.]+)")
         };
 

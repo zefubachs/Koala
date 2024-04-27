@@ -67,13 +67,14 @@ public class Parser
         {
             case TokenType.Number: return new ConstantNode(int.Parse(context.CurrentToken.Value!), typeof(int));
             case TokenType.Decimal: return new ConstantNode(decimal.Parse(context.CurrentToken.Value!), typeof(decimal));
-            case TokenType.Boolean: return new ConstantNode(bool.Parse(context.CurrentToken.Value!), typeof(bool));
+            case TokenType.True: return new ConstantNode(true, typeof(bool));
+            case TokenType.False: return new ConstantNode(false, typeof(bool));
             case TokenType.String: return new ConstantNode(context.CurrentToken.Value, typeof(string));
             case TokenType.Parameter: return new ParameterNode(context.CurrentToken.Value!);
             //case TokenType.OpenParanthesis:
             //    // New scope
             //    break;
-            case TokenType.Function: return ParseFunction(context.CurrentToken, context);
+            case TokenType.Reference: return ParseFunction(context.CurrentToken, context);
             default:
                 throw new ParseException(context.CurrentToken, $"Unexpected token");
         }

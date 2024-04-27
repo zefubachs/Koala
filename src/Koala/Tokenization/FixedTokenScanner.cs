@@ -5,7 +5,7 @@ public class FixedTokenScanner(TokenType tokenType, string key, StringComparison
         : this(tokenType, key, StringComparison.InvariantCultureIgnoreCase)
     { }
 
-    public (Token token, int positions)? Scan(ref StringCursor cursor)
+    public (Token Token, int Length)? Scan(ref StringCursor cursor)
     {
         if (cursor.Value.StartsWith(key, comparison))
         {

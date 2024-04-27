@@ -1,7 +1,7 @@
 ﻿namespace Koala.Tokenization;
 public class StringTokenScanner : ITokenScanner
 {
-    public (Token token, int positions)? Scan(ref StringCursor cursor)
+    public (Token Token, int Length)? Scan(ref StringCursor cursor)
     {
         if (cursor.Value[0] == '"')
         {
