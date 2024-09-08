@@ -1,9 +1,9 @@
-﻿namespace Koala.Ast;
+﻿namespace Koala.Syntax;
 public partial class BinaryNode
 {
     public class AndNode : BinaryNode
     {
-        public AndNode(AstNode left, AstNode right)
+        public AndNode(SyntaxNode left, SyntaxNode right)
             : base(NodeType.And, left, right)
         { }
 
@@ -20,7 +20,7 @@ public partial class BinaryNode
 
     public class OrNode : BinaryNode
     {
-        public OrNode(AstNode left, AstNode right)
+        public OrNode(SyntaxNode left, SyntaxNode right)
             : base(NodeType.Or, left, right)
         { }
 

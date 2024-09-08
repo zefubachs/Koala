@@ -1,9 +1,9 @@
-﻿namespace Koala.Ast;
+﻿namespace Koala.Syntax;
 public partial class BinaryNode
 {
     public class EqualsNode : BinaryNode
     {
-        public EqualsNode(AstNode left, AstNode right)
+        public EqualsNode(SyntaxNode left, SyntaxNode right)
             : base(NodeType.Equals, left, right)
         { }
 
@@ -17,7 +17,7 @@ public partial class BinaryNode
 
     public class NotEqualsNode : BinaryNode
     {
-        public NotEqualsNode(AstNode left, AstNode right)
+        public NotEqualsNode(SyntaxNode left, SyntaxNode right)
             : base(NodeType.NotEquals, left, right)
         { }
 

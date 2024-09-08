@@ -1,9 +1,9 @@
-﻿namespace Koala.Ast;
+﻿namespace Koala.Syntax;
 public partial class BinaryNode
 {
     public class AddNode : BinaryNode
     {
-        public AddNode(AstNode left, AstNode right)
+        public AddNode(SyntaxNode left, SyntaxNode right)
             : base(NodeType.Add, left, right)
         { }
 
@@ -26,7 +26,7 @@ public partial class BinaryNode
 
     public class SubstractNode : BinaryNode
     {
-        public SubstractNode(AstNode left, AstNode right)
+        public SubstractNode(SyntaxNode left, SyntaxNode right)
             : base(NodeType.Subtract, left, right)
         { }
 

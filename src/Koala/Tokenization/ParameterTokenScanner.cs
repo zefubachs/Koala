@@ -17,7 +17,7 @@ public class ParameterTokenScanner : ITokenScanner
         }
 
         var value = cursor.Value.Slice(1, length - 1).ToString();
-        var token = new Token(TokenType.Parameter, value, cursor.Line, cursor.Column);
+        var token = new Token(TokenType.Variable, value, cursor.Line, cursor.Column);
         return (token, length);
     }
 }

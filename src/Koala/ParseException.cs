@@ -16,3 +16,17 @@ public class ParseException : Exception
         Token = token;
     }
 }
+
+public class ParseStructException : Exception
+{
+    public int Column { get; }
+
+    public ParseStructException(string message, int column)
+        : base(message)
+    {
+        Column = column;
+    }
+
+    public static ParseStructException UnexptectedToken(TokenStruct token)
+        => new ParseStructException($"Unexpected token '{token.Text}' at {token.Column}.", token.Column);
+}

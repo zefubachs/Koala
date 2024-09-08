@@ -1,11 +1,11 @@
-﻿using Koala.Ast;
+﻿using Koala.Syntax;
 
 namespace Koala.Parsing;
 public class ParseResult
 {
-    public AstNode Root { get; }
+    public IElement Root { get; }
 
-    public ParseResult(AstNode expression)
+    public ParseResult(IElement expression)
     {
         Root = expression;
     }

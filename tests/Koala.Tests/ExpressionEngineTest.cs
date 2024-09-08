@@ -41,16 +41,18 @@ public class ExpressionEngineTest
     public async Task Sum_Integer_Parameterized()
     {
         var expression = "@Param1 + @Param2";
-        var context = new ExecutionContext(new ParameterProviderBuilder()
+        var parameters = new ParameterProviderBuilder()
             .AddDictionary(new Dictionary<string, object>
             {
                 ["Param1"] = 2,
                 ["Param2"] = 3,
-            }).Build());
+            }).Build();
+        var context = new ExecutionContext(parameters);
 
         var result = await engine.ExecuteAsync(expression, context);
 
         Assert.IsType<int>(result.Result);
+        Assert.Equal(5, result.Result);
     }
 
     [Fact]
@@ -67,12 +69,13 @@ public class ExpressionEngineTest
     public async Task Function_Multiple_Parameters()
     {
         var expression = "RegexMatch(@Pattern, @Input)";
-        var context = new ExecutionContext(new ParameterProviderBuilder()
+        var parameters = new ParameterProviderBuilder()
             .AddDictionary(new Dictionary<string, object>
             {
                 ["Pattern"] = "test",
                 ["Input"] = "Dit is een test",
-            }).Build());
+            }).Build();
+        var context = new ExecutionContext(parameters);
 
         var result = await engine.ExecuteAsync(expression, context);
         Assert.Equal(true, result.Result);

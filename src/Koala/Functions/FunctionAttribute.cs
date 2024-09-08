@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Koala.Functions;
 
-namespace Koala.Functions;
-
+/// <summary>
+/// Marks this method as a invokable function by the function registry.
+/// </summary>
 [AttributeUsage(AttributeTargets.Method)]
 public class FunctionAttribute : Attribute
 {

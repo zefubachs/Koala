@@ -1,12 +1,12 @@
 ﻿using Koala.Functions;
 
-namespace Koala.Ast;
-public class FunctionNode : AstNode
+namespace Koala.Syntax;
+public class FunctionNode : SyntaxNode
 {
     public FunctionDescriptor Function { get; }
-    public IReadOnlyList<AstNode> Parameters { get; }
+    public IReadOnlyList<SyntaxNode> Parameters { get; }
 
-    public FunctionNode(FunctionDescriptor function, IEnumerable<AstNode> parameters)
+    public FunctionNode(FunctionDescriptor function, IEnumerable<SyntaxNode> parameters)
     {
         Function = function;
         Parameters = parameters.ToList();

@@ -1,5 +1,5 @@
-﻿using Koala.Ast;
-using Koala.Ast;
+﻿using Koala.Syntax;
+using Koala.Syntax;
 using Koala.Functions;
 using Koala.Tokenization;
 using System.Xml.Linq;
@@ -14,10 +14,50 @@ public class Parser
         this.functions = functions;
     }
 
-    public AstNode Parse(IEnumerable<Token> tokens)
+    public SyntaxNode Parse(IEnumerable<Token> tokens)
     {
         var context = new ParseContext(tokens);
-        AstNode? root = null;
+
+        SyntaxNode? previousNode = null;
+        while (context.NextToken())
+        {
+            switch (context.CurrentToken.Type)
+            {
+                case TokenType.Number:
+                    previousNode = new ConstantNode(int.Parse(context.CurrentToken.Value!), typeof(int));
+                    break;
+                case TokenType.Operator:
+                    if (previousNode is null)
+                        throw new ParseException(context.CurrentToken, $"Unexpected operator '{context.CurrentToken.Value}'.");
+
+                    switch (context.CurrentToken.Value)
+                    {
+                        case "+":
+
+                            break;
+                        case "-":
+
+                            break;
+                        case "*":
+
+                            break;
+                        case "\\":
+
+                            break;
+                        case "%":
+
+                            break;
+                        default:
+                            break;
+                    }
+
+                    break;
+                default:
+                    throw new ParseException(context.CurrentToken, $"Unexpected token '{context.CurrentToken.Value}'.");
+            }
+        }
+
+        SyntaxNode? root = null;
         while (context.NextToken())
         {
             var left = ReadNode(context);
@@ -61,7 +101,7 @@ public class Parser
         return root;
     }
 
-    private AstNode ReadNode(ParseContext context)
+    private SyntaxNode ReadNode(ParseContext context)
     {
         switch (context.CurrentToken?.Type)
         {
@@ -70,7 +110,7 @@ public class Parser
             case TokenType.True: return new ConstantNode(true, typeof(bool));
             case TokenType.False: return new ConstantNode(false, typeof(bool));
             case TokenType.String: return new ConstantNode(context.CurrentToken.Value, typeof(string));
-            case TokenType.Parameter: return new ParameterNode(context.CurrentToken.Value!);
+            case TokenType.Variable: return new ParameterNode(context.CurrentToken.Value!);
             //case TokenType.OpenParanthesis:
             //    // New scope
             //    break;
@@ -90,7 +130,7 @@ public class Parser
             throw new ParseException(token, "Expected '('.");
 
         token = context.CurrentToken;
-        var parameters = new List<AstNode>();
+        var parameters = new List<SyntaxNode>();
         while (context.NextToken())
         {
             token = context.CurrentToken;

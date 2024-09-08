@@ -1,5 +1,5 @@
-﻿namespace Koala.Ast;
-public class ParameterNode : AstNode
+﻿namespace Koala.Syntax;
+public class ParameterNode : SyntaxNode
 {
     public string ParameterName { get; }
 

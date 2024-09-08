@@ -1,4 +1,4 @@
-﻿namespace Koala.Ast;
+﻿namespace Koala.Syntax;
 public enum NodeType
 {
     Add,

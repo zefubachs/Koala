@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koala.Functions;
 public class FunctionDescriptor
@@ -21,8 +16,6 @@ public class FunctionDescriptor
 
     public object? Invoke(object?[] arguments)
     {
-
-
         return methodDelegate.DynamicInvoke(arguments);
     }
 
@@ -30,13 +23,13 @@ public class FunctionDescriptor
     {
         var parameterInfos = method.GetParameters();
         var arguments = new Expression[parameterInfos.Length];
-        var parameterExpressions = new List<ParameterExpression>();
+        var parameterExpressions = new ParameterExpression[arguments.Length];
         for (int i = 0; i < arguments.Length; i++)
         {
             var parameter = parameterInfos[i];
             var expression = Expression.Parameter(parameter.ParameterType, parameter.Name);
             arguments[i] = expression;
-            parameterExpressions.Add(expression);
+            parameterExpressions[i] = expression;
         }
 
         var callExpression = Expression.Call(null, method, arguments);

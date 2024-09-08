@@ -66,7 +66,7 @@ public class LexerTests
         var input = "@Param1";
         var tokens = lexer.Tokenize(input).ToList();
         Assert.Single(tokens);
-        Assert.Equal(TokenType.Parameter, tokens[0].Type);
+        Assert.Equal(TokenType.Variable, tokens[0].Type);
         Assert.Equal("Param1", tokens[0].Value);
     }
 

@@ -1,5 +1,5 @@
-﻿namespace Koala.Ast;
-public class ConstantNode : AstNode
+﻿namespace Koala.Syntax;
+public class ConstantNode : SyntaxNode
 {
     private readonly Task<object?> task;
 

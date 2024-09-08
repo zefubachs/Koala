@@ -11,7 +11,6 @@ public enum TokenType
     Operator,
     Reference,
     Accessor,
-    Parameter,
+    Variable,
     Comma,
-    Invert,
 }
