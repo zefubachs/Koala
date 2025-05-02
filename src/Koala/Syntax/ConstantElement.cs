@@ -7,4 +7,9 @@ public class ConstantElement(object? value) : IElement
     {
         return ValueTask.FromResult(Value);
     }
+
+    public override string ToString()
+    {
+        return $"[{Value?.GetType()}] {Value}";
+    }
 }

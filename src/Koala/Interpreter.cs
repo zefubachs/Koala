@@ -59,10 +59,11 @@ public class Interpreter
 
                         break;
                 }
+                continue;
             }
         }
 
-        return root;
+        return root ?? new ConstantElement(0);
     }
 
     private static IElement Grammar_Start(ref LexerStruct lexer)
