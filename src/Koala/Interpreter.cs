@@ -21,11 +21,11 @@ public class Interpreter
 
     public IElement Parse(ReadOnlySpan<char> expression)
     {
-        var lexer = new LexerStruct(expression, strategies);
+        var lexer = new Lexer(expression, strategies);
         return Parse(ref lexer);
     }
 
-    private static IElement Parse(ref LexerStruct lexer)
+    private static IElement Parse(ref Lexer lexer)
     {
         IElement? root = null;
 
@@ -66,7 +66,7 @@ public class Interpreter
         return root ?? new ConstantElement(0);
     }
 
-    private static IElement Grammar_Start(ref LexerStruct lexer)
+    private static IElement Grammar_Start(ref Lexer lexer)
     {
         switch (lexer.Current.Type)
         {
@@ -87,7 +87,7 @@ public class Interpreter
                     return new ConstantElement(-decimal.Parse(lexer.Current.Text));
 
                 throw ParseStructException.UnexptectedToken(lexer.Current);
-            case TokenType.Variable: return new VariableElement(lexer.Current.Text.ToString());
+            case TokenType.Parameter: return new VariableElement(lexer.Current.Text.ToString());
             default:
                 throw ParseStructException.UnexptectedToken(lexer.Current);
         }

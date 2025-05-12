@@ -3,9 +3,9 @@
 namespace Koala.Tests.Tokenization;
 public class LexerStructTests
 {
-    private static LexerStruct CreateLexer(ReadOnlySpan<char> expression)
+    private static Lexer CreateLexer(ReadOnlySpan<char> expression)
     {
-        return new LexerStruct(expression, TokenStrategies.Default);
+        return new Lexer(expression, TokenStrategies.Default);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class LexerStructTests
 
         var result = lexer.MoveNext();
         Assert.True(result);
-        Assert.Equal(TokenType.Variable, lexer.Current.Type);
+        Assert.Equal(TokenType.Parameter, lexer.Current.Type);
         Assert.Equal(string.Empty, lexer.Current.Text);
 
         result = lexer.MoveNext();
@@ -85,7 +85,7 @@ public class LexerStructTests
 
         var result = lexer.MoveNext();
         Assert.True(result);
-        Assert.Equal(TokenType.Variable, lexer.Current.Type);
+        Assert.Equal(TokenType.Parameter, lexer.Current.Type);
         Assert.Equal("param1", lexer.Current.Text);
 
         result = lexer.MoveNext();

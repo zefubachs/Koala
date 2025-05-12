@@ -1,6 +1,7 @@
 ﻿namespace Koala.Tokenization;
 public enum TokenType
 {
+    Unknown,
     OpenParanthesis,
     CloseParenthesis,
     Number,
@@ -11,6 +12,6 @@ public enum TokenType
     Operator,
     Reference,
     Accessor,
-    Variable,
+    Parameter,
     Comma,
 }

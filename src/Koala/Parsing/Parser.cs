@@ -110,7 +110,7 @@ public class Parser
             case TokenType.True: return new ConstantNode(true, typeof(bool));
             case TokenType.False: return new ConstantNode(false, typeof(bool));
             case TokenType.String: return new ConstantNode(context.CurrentToken.Value, typeof(string));
-            case TokenType.Variable: return new ParameterNode(context.CurrentToken.Value!);
+            case TokenType.Parameter: return new ParameterNode(context.CurrentToken.Value!);
             //case TokenType.OpenParanthesis:
             //    // New scope
             //    break;

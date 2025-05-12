@@ -18,7 +18,7 @@ public class ParserTest
     {
         var tokens = new List<Token>
         {
-            new Token(TokenType.Variable, "Param1", 0, 0),
+            new Token(TokenType.Parameter, "Param1", 0, 0),
         };
         var result = parser.Parse(tokens);
         Assert.IsType<ParameterNode>(result);

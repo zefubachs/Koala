@@ -1,20 +1,18 @@
 ﻿namespace Koala.Tokenization;
 public class FixedTokenStrategy(TokenType type, string value, StringComparison comparison = StringComparison.InvariantCultureIgnoreCase) : ITokenStrategy
 {
-    public bool TryRead(ReadOnlySpan<char> text, out TokenInfo info)
+    public TokenInfo Evaluate(ReadOnlySpan<char> text)
     {
-        if (text.StartsWith(value, comparison))
+        if (text.StartsWith(value))
         {
-            info = new TokenInfo
+            return new TokenInfo
             {
                 Type = type,
-                Text = text[0..value.Length],
+                Text = text.Slice(0, value.Length),
                 Length = value.Length,
             };
-            return true;
         }
 
-        info = default;
-        return false;
+        return default;
     }
 }

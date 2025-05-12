@@ -27,6 +27,6 @@ public class ParseStructException : Exception
         Column = column;
     }
 
-    public static ParseStructException UnexptectedToken(TokenStruct token)
+    public static ParseStructException UnexptectedToken(Token token)
         => new ParseStructException($"Unexpected token '{token.Text}' at {token.Column}.", token.Column);
 }

@@ -1,101 +1,58 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
-
-namespace Koala.Tokenization;
-public class Lexer(IReadOnlyCollection<ITokenScanner> scanners)
+﻿namespace Koala.Tokenization;
+public ref struct Lexer(ReadOnlySpan<char> expression, IEnumerable<ITokenStrategy> strategies)
 {
-    private static IReadOnlyCollection<ITokenScanner> DefaultScanners { get; } =
-    [
-        new FixedTokenScanner(TokenType.OpenParanthesis, "("),
-        new FixedTokenScanner(TokenType.CloseParenthesis, ")"),
-        new FixedTokenScanner(TokenType.Operator, "+"),
-        new FixedTokenScanner(TokenType.Operator, "-"),
-        new FixedTokenScanner(TokenType.Operator, "\\"),
-        new FixedTokenScanner(TokenType.Operator, "*"),
-        new FixedTokenScanner(TokenType.Operator, "%"),
-        new FixedTokenScanner(TokenType.Operator, "=="),
-        new FixedTokenScanner(TokenType.Operator, "!="),
-        new FixedTokenScanner(TokenType.Operator, ">"),
-        new FixedTokenScanner(TokenType.Operator, ">="),
-        new FixedTokenScanner(TokenType.Operator, "<"),
-        new FixedTokenScanner(TokenType.Operator, "<="),
-        new FixedTokenScanner(TokenType.Comma, ","),
-        new RegexTokenScanner(TokenType.True, @"^true(?![a-zA-Z_])", RegexOptions.IgnoreCase),
-        new RegexTokenScanner(TokenType.False, @"^false(?![a-zA-Z_])", RegexOptions.IgnoreCase),
-        new RegexTokenScanner(TokenType.Operator, @"^(and|or)(?![a-zA-Z_])", RegexOptions.IgnoreCase),
-        new RegexTokenScanner(TokenType.Reference, @"^[a-zA-Z]\w*"),
-        new ParameterTokenScanner(),
-        new StringTokenScanner(),
-        new NummericTokenScanner(),
-        new FixedTokenScanner(TokenType.Accessor, "."),
-    ];
+    private readonly IEnumerable<ITokenStrategy> strategies = strategies;
 
-    public IReadOnlyCollection<Token> Tokenize(ReadOnlySpan<char> input)
+    private ReadOnlySpan<char> text = expression;
+    private int position = 0;
+
+    public readonly Lexer GetEnumerator() => this;
+    public Token Current { get; private set; }
+
+    public bool MoveNext()
     {
-        var tokens = new List<Token>();
-        var position = 0;
-        var column = 0;
-        var line = 0;
-        while (position < input.Length)
+        SkipTrivia();
+        if (text.IsEmpty)
         {
-            if (input[position] == ' ')
-            {
-                column++;
-                position++;
-                continue;
-            }
-
-            if (input[position] == '\t')
-            {
-                column += 3;
-                position++;
-                continue;
-            }
-
-            if (input[position] == '\r')
-            {
-                column++;
-                position++;
-                continue;
-            }
-
-            if (input[position] == '\n')
-            {
-                column = 0;
-                line++;
-                position++;
-                continue;
-            }
-
-            var cursor = new StringCursor(input[position..], column, line);
-            if (!TryScan(ref cursor, out var token, out var skip))
-                throw new TokenizerException(input[position], line, column);
-
-
-            position += skip;
-            tokens.Add(token);
+            Current = default;
+            return false;
         }
 
-        return tokens;
+        var info = GetTokenInfo();
+        Current = new Token
+        {
+            Type = info.Type,
+            Text = info.Text,
+            Column = position,
+        };
+        position += info.Length;
+        text = text[info.Length..];
+        return true;
     }
 
-    private bool TryScan(ref StringCursor cursor, [NotNullWhen(true)] out Token? token, out int skip)
+    private void SkipTrivia()
     {
-        foreach (var scanner in scanners)
+        while (text.StartsWith(' '))
         {
-            var result = scanner.Scan(ref cursor);
-            if (result is not null)
-            {
-                token = result.Value.Token;
-                skip = result.Value.Length;
-                return true;
-            }
+            text = text[1..];
+            position++;
+        }
+    }
+
+    private TokenInfo GetTokenInfo()
+    {
+        foreach (var strategy in strategies)
+        {
+            var info = strategy.Evaluate(text);
+            if (info.Length > 0)
+                return info;
         }
 
-        token = null;
-        skip = 0;
-        return false;
+        return new TokenInfo
+        {
+            Type = TokenType.Unknown,
+            Text = text[..1],
+            Length = 1,
+        };
     }
-
-    public static Lexer CreateDefault() => new Lexer(DefaultScanners);
 }

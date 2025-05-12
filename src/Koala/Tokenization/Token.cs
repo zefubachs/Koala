@@ -1,18 +1,11 @@
-﻿namespace Koala.Tokenization;
-public class Token
+﻿using System.Diagnostics;
+
+namespace Koala.Tokenization;
+
+[DebuggerDisplay("[{Type}:{Column}] {Text}")]
+public readonly ref struct Token
 {
-    public TokenType Type { get; }
-    public string? Value { get; }
-    public int Line { get; }
-    public int Column { get; }
-
-    public Token(TokenType type, string? value, int line, int column)
-    {
-        Type = type;
-        Value = value;
-        Line = line;
-        Column = column;
-    }
-
-    public override string ToString() => $"{Type} ({Value}) [{Line}:{Column}]";
+    public required TokenType Type { get; init; }
+    public required ReadOnlySpan<char> Text { get; init; }
+    public int Column { get; init; }
 }
