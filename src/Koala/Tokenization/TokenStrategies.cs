@@ -5,6 +5,8 @@ public static partial class TokenStrategies
 {
     public static IReadOnlyList<ITokenStrategy> Default { get; } =
     [
+        new FixedTokenStrategy(TokenType.And, "and"),
+        new FixedTokenStrategy(TokenType.Or, "or"),
         new RegexTokenStrategy(TokenType.True, TrueRegex),
         new RegexTokenStrategy(TokenType.False, FalseRegex),
         new FixedTokenStrategy(TokenType.OpenParanthesis, "("),

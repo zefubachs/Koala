@@ -14,4 +14,6 @@ public enum TokenType
     Accessor,
     Parameter,
     Comma,
+    And,
+    Or,
 }

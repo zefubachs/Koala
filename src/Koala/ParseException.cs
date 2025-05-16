@@ -6,27 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Koala;
+
 public class ParseException : Exception
-{
-    public Token Token { get; }
-
-    public ParseException(Token token, string message)
-        : base(message)
-    {
-        Token = token;
-    }
-}
-
-public class ParseStructException : Exception
 {
     public int Column { get; }
 
-    public ParseStructException(string message, int column)
+    public ParseException(int column, string message)
         : base(message)
     {
         Column = column;
     }
 
-    public static ParseStructException UnexptectedToken(Token token)
-        => new ParseStructException($"Unexpected token '{token.Text}' at {token.Column}.", token.Column);
+    public static ParseException UnexptectedToken(Token token)
+        => new ParseException(token.Column, $"Unexpected token '{token.Text}' at {token.Column}.");
 }

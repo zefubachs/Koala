@@ -1,110 +1,118 @@
 ﻿using Koala.Tokenization;
 
 namespace Koala.Tests.Tokenization;
-
 public class LexerTests
 {
-    private readonly Lexer lexer = Lexer.CreateDefault();
-
-
-    [Fact]
-    public void Valid_Single_Operator()
+    private static Lexer CreateLexer(ReadOnlySpan<char> expression)
     {
-        var input = "+";
-        var tokens = lexer.Tokenize(input).ToList();
-
-        //Assert.That.Instance(tokens).HaveLength(1)
-        //    .And.WithItem(0, x => x.EqualsTo(TokenType.Operator).And.EqualsTo("+"));
-        Assert.Single(tokens);
-        Assert.Equal(TokenType.Operator, tokens[0].Type);
-        Assert.Equal("+", tokens[0].Value);
+        return new Lexer(expression, TokenStrategies.Default);
     }
 
     [Fact]
-    public void Valid_Comparison_Operator()
+    public void Number_Single_Digit()
     {
-        var input = "AND";
-        var tokens = lexer.Tokenize(input).ToList();
-        Assert.Single(tokens);
-        Assert.Equal(TokenType.Operator, tokens[0].Type);
-        Assert.Equal("AND", tokens[0].Value);
+        var lexer = CreateLexer("3");
+
+        var result = lexer.MoveNext();
+        Assert.True(result);
+        Assert.Equal(TokenType.Number, lexer.Current.Type);
+        Assert.Equal("3", lexer.Current.Text);
+
+        result = lexer.MoveNext();
+        Assert.False(result);
     }
 
     [Fact]
-    public void Value_Single_True()
+    public void Number_Double_Digit()
     {
-        var input = "TRUE";
-        var tokens = lexer.Tokenize(input).ToList();
-        Assert.Single(tokens);
-        Assert.Equal(TokenType.True, tokens[0].Type);
-        Assert.Equal("TRUE", tokens[0].Value);
+        var lexer = CreateLexer("56");
+
+        var result = lexer.MoveNext();
+        Assert.True(result);
+        Assert.Equal(TokenType.Number, lexer.Current.Type);
+        Assert.Equal("56", lexer.Current.Text);
+
+        result = lexer.MoveNext();
+        Assert.False(result);
     }
 
     [Fact]
-    public void Valid_Single_Integer()
+    public void String_Empty()
     {
-        var input = "123";
-        var tokens = lexer.Tokenize(input).ToList();
-        Assert.Single(tokens);
-        Assert.Equal(TokenType.Number, tokens[0].Type);
-        Assert.Equal("123", tokens[0].Value);
+        var lexer = CreateLexer("\"\"");
+
+        var result = lexer.MoveNext();
+        Assert.True(result);
+        Assert.Equal(TokenType.String, lexer.Current.Type);
+        Assert.Equal("\"\"", lexer.Current.Text);
+
+        result = lexer.MoveNext();
+        Assert.False(result);
     }
 
     [Fact]
-    public void Valid_Single_Decimal()
+    public void String_Value()
     {
-        var input = "1.23";
-        var tokens = lexer.Tokenize(input).ToList();
-        Assert.Single(tokens);
-        Assert.Equal(TokenType.Decimal, tokens[0].Type);
-        Assert.Equal("1.23", tokens[0].Value);
+        var lexer = CreateLexer("\"hallo wereld\"");
+
+        var result = lexer.MoveNext();
+        Assert.True(result);
+        Assert.Equal(TokenType.String, lexer.Current.Type);
+        Assert.Equal("\"hallo wereld\"", lexer.Current.Text);
+
+        result = lexer.MoveNext();
+        Assert.False(result);
     }
 
     [Fact]
-    public void Valid_Single_Parameter()
+    public void Parameter_Empty()
     {
-        var input = "@Param1";
-        var tokens = lexer.Tokenize(input).ToList();
-        Assert.Single(tokens);
-        Assert.Equal(TokenType.Parameter, tokens[0].Type);
-        Assert.Equal("Param1", tokens[0].Value);
+        var lexer = CreateLexer("@");
+
+        var result = lexer.MoveNext();
+        Assert.True(result);
+        Assert.Equal(TokenType.Unknown, lexer.Current.Type);
+        Assert.Equal("@", lexer.Current.Text);
+
+        result = lexer.MoveNext();
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void Parameter_Simple()
+    {
+        var lexer = CreateLexer("@param1");
+
+        var result = lexer.MoveNext();
+        Assert.True(result);
+        Assert.Equal(TokenType.Parameter, lexer.Current.Type);
+        Assert.Equal("@param1", lexer.Current.Text);
+
+        result = lexer.MoveNext();
+        Assert.False(result);
     }
 
     [Fact]
     public void Simple_Addition()
     {
-        var input = "10 + 32";
-        var tokens = lexer.Tokenize(input).ToList();
+        var lexer = CreateLexer("1 + 3");
 
-        Assert.Equal(3, tokens.Count);
-        Assert.Equal(TokenType.Number, tokens[0].Type);
-        Assert.Equal("10", tokens[0].Value);
-        Assert.Equal(TokenType.Operator, tokens[1].Type);
-        Assert.Equal("+", tokens[1].Value);
-        Assert.Equal(TokenType.Number, tokens[2].Type);
-        Assert.Equal("32", tokens[2].Value);
-    }
+        var result = lexer.MoveNext();
+        Assert.True(result);
+        Assert.Equal(TokenType.Number, lexer.Current.Type);
+        Assert.Equal("1", lexer.Current.Text);
 
-    [Fact]
-    public void Function_With_Single_Parameter()
-    {
-        var input = "LOWER(@Param1)";
-        var tokens = lexer.Tokenize(input).ToList();
+        result = lexer.MoveNext();
+        Assert.True(result);
+        Assert.Equal(TokenType.Operator, lexer.Current.Type);
+        Assert.Equal("+", lexer.Current.Text);
 
-        Assert.Equal(4, tokens.Count);
-        Assert.Equal(TokenType.Reference, tokens[0].Type);
-        Assert.Equal("LOWER", tokens[0].Value);
-        Assert.Equal(TokenType.OpenParanthesis, tokens[1].Type);
+        result = lexer.MoveNext();
+        Assert.True(result);
+        Assert.Equal(TokenType.Number, lexer.Current.Type);
+        Assert.Equal("3", lexer.Current.Text);
 
-        Assert.Equal(TokenType.CloseParenthesis, tokens[3].Type);
-    }
-
-    [Fact]
-    public void Function_With_Multiple_Parameters()
-    {
-        var input = """REGEX(@Param1, "^\d", true)""";
-        var tokens = lexer.Tokenize(input);
-
-        Assert.Equal(8, tokens.Count);
+        result = lexer.MoveNext();
+        Assert.False(result);
     }
 }

@@ -3,7 +3,7 @@ public class FixedTokenStrategy(TokenType type, string value, StringComparison c
 {
     public TokenInfo Evaluate(ReadOnlySpan<char> text)
     {
-        if (text.StartsWith(value))
+        if (text.StartsWith(value, comparison))
         {
             return new TokenInfo
             {
